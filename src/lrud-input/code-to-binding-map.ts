@@ -6,5 +6,6 @@ export default {
   37: 'left',
   39: 'right',
   13: 'select',
-  461: 'back' // webos remote
+  461: 'back', // webos remote,
+  10009: 'back' // tizen
 };
