@@ -6,4 +6,5 @@ export default {
   ArrowRight: 'right',
   Enter: 'select',
   Escape: 'back',
+  Backspace: 'back',
 };
