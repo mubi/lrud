@@ -33,11 +33,9 @@ export default function focusLrud(focusStore: FocusStore) {
 
   const keydownHandler = throttle(
     function (e: KeyboardEvent) {
-      const bindingName: string = e.key
+      const bindingName =
         // @ts-ignore
-        ? keyToBindingMap[e.key]
-        // @ts-ignore
-        : keyCodeToBindingMap[e.keyCode];
+        (e.key && keyToBindingMap[e.key]) || keyCodeToBindingMap[e.keyCode];
 
       // @ts-ignore
       const binding = lrudMapping[bindingName];
