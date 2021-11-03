@@ -74,6 +74,73 @@ describe('FocusNode Events', () => {
         })
       );
     });
+
+    it('calls when given a keyCode', () => {
+      const rootOnMove = jest.fn();
+      const nodeBOnMove = jest.fn();
+      let focusStore;
+
+      function TestComponent() {
+        focusStore = useFocusStoreDangerously();
+
+        return (
+          <FocusNode onMove={rootOnMove}>
+            <FocusNode focusId="nodeA" />
+            <FocusNode
+              focusId="nodeB"
+              orientation="vertical"
+              onMove={nodeBOnMove}>
+              <FocusNode focusId="nodeB-A" />
+              <FocusNode focusId="nodeB-B" />
+            </FocusNode>
+          </FocusNode>
+        );
+      }
+
+      render(
+        <FocusRoot>
+          <TestComponent />
+        </FocusRoot>
+      );
+
+      // Verify initial state
+      expect(rootOnMove.mock.calls.length).toBe(0);
+      expect(nodeBOnMove.mock.calls.length).toBe(0);
+      expect(focusStore.getState().focusedNodeId).toEqual('nodeA');
+
+      // Arrow Right
+      fireEvent.keyDown(window, {
+        key: 'r', // intentionally unmapped key
+        keyCode: 39,
+      });
+      expect(rootOnMove.mock.calls.length).toBe(1);
+      expect(nodeBOnMove.mock.calls.length).toBe(0);
+      expect(focusStore.getState().focusedNodeId).toEqual('nodeB-A');
+
+      // Arrow Down
+      fireEvent.keyDown(window, {
+        keyCode: 40,
+      });
+      expect(rootOnMove.mock.calls.length).toBe(1);
+      expect(nodeBOnMove.mock.calls.length).toBe(1);
+      expect(focusStore.getState().focusedNodeId).toEqual('nodeB-B');
+
+      // Arrow Up
+      fireEvent.keyDown(window, {
+        keyCode: 38,
+      });
+      expect(rootOnMove.mock.calls.length).toBe(1);
+      expect(nodeBOnMove.mock.calls.length).toBe(2);
+      expect(focusStore.getState().focusedNodeId).toEqual('nodeB-A');
+
+      // Arrow Left
+      fireEvent.keyDown(window, {
+        keyCode: 37,
+      });
+      expect(rootOnMove.mock.calls.length).toBe(2);
+      expect(nodeBOnMove.mock.calls.length).toBe(2);
+      expect(focusStore.getState().focusedNodeId).toEqual('nodeA');
+    });
   });
 
   describe('onBlur/onFocus', () => {
@@ -336,6 +403,69 @@ describe('FocusNode Events', () => {
       fireEvent.keyDown(window, {
         code: 'Escape',
         key: 'Escape',
+      });
+
+      expect(rootonBack.mock.calls.length).toBe(1);
+      expect(nodeAOnBack.mock.calls.length).toBe(1);
+      expect(nodeBOnBack.mock.calls.length).toBe(0);
+
+      expect(rootonBack).toHaveBeenCalledWith(
+        expect.objectContaining({
+          key: 'back',
+          isArrow: false,
+          node: focusStore.getState().nodes.testRoot,
+        })
+      );
+
+      expect(nodeAOnBack).toHaveBeenCalledWith(
+        expect.objectContaining({
+          key: 'back',
+          isArrow: false,
+          node: focusStore.getState().nodes.nodeA,
+        })
+      );
+    });
+
+    it('calls it when Backspace is pressed', () => {
+      const rootonBack = jest.fn();
+      const nodeAOnBack = jest.fn();
+      const nodeBOnBack = jest.fn();
+      let focusStore;
+
+      function TestComponent() {
+        focusStore = useFocusStoreDangerously();
+
+        return (
+          <FocusNode focusId="testRoot" onBack={rootonBack}>
+            <FocusNode
+              focusId="nodeA"
+              onBack={nodeAOnBack}
+              data-testid="nodeA"
+            />
+            <FocusNode
+              focusId="nodeB"
+              data-testid="nodeB"
+              onBack={nodeBOnBack}
+            />
+          </FocusNode>
+        );
+      }
+
+      render(
+        <FocusRoot>
+          <TestComponent />
+        </FocusRoot>
+      );
+
+      expect(focusStore.getState().focusedNodeId).toEqual('nodeA');
+
+      expect(rootonBack.mock.calls.length).toBe(0);
+      expect(nodeAOnBack.mock.calls.length).toBe(0);
+      expect(nodeBOnBack.mock.calls.length).toBe(0);
+
+      fireEvent.keyDown(window, {
+        code: 'Backspace',
+        key: 'Backspace',
       });
 
       expect(rootonBack.mock.calls.length).toBe(1);
