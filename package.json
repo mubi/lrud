@@ -1,6 +1,6 @@
 {
   "name": "@mubi/lrud",
-  "version": "0.0.15",
+  "version": "0.0.16",
   "description": "A React library for managing focus in TV apps.",
   "main": "es/index.js",
   "module": "es/index.js",
@@ -44,7 +44,10 @@
     "remote"
   ],
   "author": "James Please",
-  "contributors": ["mgroh", "simontsang"],
+  "contributors": [
+    "mgroh",
+    "simontsang"
+  ],
   "license": "MIT",
   "bugs": {
     "url": "https://github.com/mubi/lrud/issues"
