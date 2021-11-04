@@ -1,10 +1,6 @@
 # lrud
 
-[![Travis build status](https://img.shields.io/travis/com/jamesplease/lrud/main)](https://travis-ci.com/github/jamesplease/lrud)
-[![npm version](https://img.shields.io/npm/v/@please/lrud.svg?color=brightgreen)](https://www.npmjs.com/package/@please/lrud)
-[![Code coverage](https://img.shields.io/coveralls/github/jamesplease/lrud?color=brightgreen)](https://coveralls.io/github/jamesplease/lrud)
-
-A React library for managing focus in LRUD applications.
+A React library for managing focus in LRUD applications, forked from [@please/lrud](https://github.com/jamesplease/lrud)
 
 ## Motivation
 
@@ -16,17 +12,7 @@ with two dimensional focus seamless.
 
 ## Installation
 
-Install using [npm](https://www.npmjs.com):
-
-```
-npm install @please/lrud
-```
-
-or [yarn](https://yarnpkg.com/):
-
-```
-yarn add @please/lrud
-```
+TBD
 
 This library has the following peer dependencies:
 
@@ -64,7 +50,7 @@ This library has the following peer dependencies:
 Render the `FocusRoot` high up in your application's component tree.
 
 ```jsx
-import { FocusRoot } from '@please/lrud';
+import { FocusRoot } from '@mubi/lrud';
 
 export default function App() {
   return (
@@ -78,7 +64,7 @@ export default function App() {
 You may then use FocusNode components to create a focusable elements on the page.
 
 ```jsx
-import { FocusNode } from '@please/lrud';
+import { FocusNode } from '@mubi/lrud';
 
 export default function Profile() {
   return <FocusNode className="profile">Profile</FocusNode>;
@@ -121,7 +107,7 @@ All props are optional.
 | `wrapping`    | boolean | `false`        | Set to `true` for the navigation to wrap when the user reaches the start or end of the root's children. |
 
 ```jsx
-import { FocusRoot } from '@please/lrud';
+import { FocusRoot } from '@mubi/lrud';
 
 export default function App() {
   return (
@@ -177,7 +163,7 @@ All props are optional. Example usage appears beneath the props table.
 | `...rest`                   | any                 |                  | All other props are applied to the underlying DOM node.                                                                                                                                |
 
 ```jsx
-import { FocusNode } from '@please/lrud';
+import { FocusNode } from '@mubi/lrud';
 
 export default function Profile() {
   return (
@@ -199,7 +185,7 @@ A [Hook](https://reactjs.org/docs/hooks-intro.html) that returns the focus node 
 then `null` will be returned instead.
 
 ```js
-import { useFocusNode } from '@please/lrud';
+import { useFocusNode } from '@mubi/lrud';
 
 export default function MyComponent() {
   const navFocusNode = useFocusNode('nav');
@@ -213,7 +199,7 @@ export default function MyComponent() {
 A [Hook](https://reactjs.org/docs/hooks-intro.html) that returns the active focus node, or `null` if no node is active.
 
 ```js
-import { useActiveNode } from '@please/lrud';
+import { useActiveNode } from '@mubi/lrud';
 
 export default function MyComponent() {
   const activeNode = useActiveNode();
@@ -234,7 +220,7 @@ This can be used to:
 - exit traps
 
 ```js
-import { useSetFocus } from '@please/lrud';
+import { useSetFocus } from '@mubi/lrud';
 
 export default function MyComponent() {
   const setFocus = useSetFocus();
@@ -251,7 +237,7 @@ A [Hook](https://reactjs.org/docs/hooks-intro.html) that allows you to tap into 
 you need to respond to the focus lifecycle for a node that is not in your current component.
 
 ```js
-import { useNodeEvents } from '@please/lrud';
+import { useNodeEvents } from '@mubi/lrud';
 
 export default function MyComponent() {
   useNodeEvents('nav', {
@@ -285,7 +271,7 @@ A [Hook](https://reactjs.org/docs/hooks-intro.html) that returns an array repres
 that are currently focused. Each entry in the array is a focus node.
 
 ```js
-import { useFocusHierarchy } from '@please/lrud';
+import { useFocusHierarchy } from '@mubi/lrud';
 
 export default function MyComponent() {
   const focusHierarchy = useFocusHierarchy();
@@ -311,7 +297,7 @@ One use-case for this hook is attaching the `focusStore` to the window when deve
 for debugging purposes.
 
 ```js
-import { useFocusStoreDangerously } from '@please/lrud';
+import { useFocusStoreDangerously } from '@mubi/lrud';
 
 export default function MyComponent() {
   const focusStore = useFocusStoreDangerously();

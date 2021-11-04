@@ -1,5 +1,5 @@
 {
-  "name": "@please/lrud",
+  "name": "@mubi/lrud",
   "version": "0.0.15",
   "description": "A React library for managing focus in TV apps.",
   "main": "es/index.js",
@@ -19,7 +19,8 @@
     "build:es": "cross-env BABEL_ENV=es babel src --out-dir es --extensions '.ts,.tsx'"
   },
   "publishConfig": {
-    "access": "public"
+    "access": "restricted",
+    "@mubi:registry": "https://npm.pkg.github.com"
   },
   "files": [
     "dist",
@@ -31,7 +32,7 @@
   ],
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/jamesplease/lrud.git"
+    "url": "git+https://github.com/mubi/lrud.git"
   },
   "keywords": [
     "lrud",
@@ -43,11 +44,12 @@
     "remote"
   ],
   "author": "James Please",
+  "contributors": ["mgroh", "simontsang"],
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/jamesplease/lrud/issues"
+    "url": "https://github.com/mubi/lrud/issues"
   },
-  "homepage": "https://github.com/jamesplease/lrud#readme",
+  "homepage": "https://github.com/mubi/lrud#readme",
   "peerDependencies": {
     "react": "^16.8.0 || ^17.0.0"
   },
