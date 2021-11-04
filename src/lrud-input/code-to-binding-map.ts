@@ -1,5 +1,4 @@
 // This maps a key code, returned from an event, to a handler name.
-// TODO: add configuration of custom key map
 export default {
   8: 'back',
   38: 'up',
