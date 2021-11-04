@@ -1,5 +1,24 @@
 # Changelog
 
+### v0.0.16 (2021/11/4)
+
+**New Features**
+
+- Added fallback behaviour to handle `KeyboardEvent`s that use contain a `keyCode`
+  but no `key` property
+- Mapped `Backspace` key press to trigger `onBack` handlers.
+- Added "Back" key mappings for LG webOS, Samsung Tizen and Sony PlayStation 4
+  browser environments.
+
+**Bug Fixes**
+
+- Fixed build so that this can be used in projects that use webpack 4.
+
+**Other**
+
+- Forked to @mubi/lrud. All previous versions are from @please/lrud
+
+
 ### v0.0.15 (2021/6/17)
 
 **New Features**
