@@ -12,7 +12,20 @@ with two dimensional focus seamless.
 
 ## Installation
 
-TBD
+This module is published to [GitHub Packages](https://docs.github.com/en/packages/learn-github-packages/installing-a-package).
+
+Once you are set up and authenticated to the [GitHub Packages npm registry](https://docs.github.com/en/packages/working-with-a-github-packages-registry/working-with-the-npm-registry#authenticating-to-github-packages), install with [npm](https://npmjs.com) or [yarn](https://yarnpkg.com/).
+
+With npm:
+```
+npm install @mubi/lrud
+```
+
+With yarn
+```
+yarn add @mubi/lrud
+```
+
 
 This library has the following peer dependencies:
 
