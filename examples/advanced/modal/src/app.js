@@ -1,4 +1,4 @@
-import { FocusNode, useSetFocus } from '@please/lrud';
+import { FocusNode, useSetFocus } from '@mubi/lrud';
 import { motion } from 'framer-motion';
 import './app.css';
 

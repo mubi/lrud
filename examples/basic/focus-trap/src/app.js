@@ -1,4 +1,4 @@
-import { FocusNode, useSetFocus } from '@please/lrud';
+import { FocusNode, useSetFocus } from '@mubi/lrud';
 import './app.css';
 
 export default function App() {

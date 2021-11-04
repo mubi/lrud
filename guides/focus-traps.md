@@ -31,7 +31,7 @@ Because users cannot enter nor exit a trap using arrows, you must use the `setFo
 imperatively move focus in and out of a trap.
 
 ```js
-import { FocusNode, useSetFocus } from '@please/lrud';
+import { FocusNode, useSetFocus } from '@mubi/lrud';
 
 export default function App() {
   return (

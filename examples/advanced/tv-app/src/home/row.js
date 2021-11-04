@@ -1,4 +1,4 @@
-import { FocusNode } from '@please/lrud';
+import { FocusNode } from '@mubi/lrud';
 import classnames from 'classnames';
 import './row.css';
 import Title from './title';

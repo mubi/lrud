@@ -1,4 +1,4 @@
-import { FocusNode } from '@please/lrud';
+import { FocusNode } from '@mubi/lrud';
 import './title.css';
 
 export default function Title() {

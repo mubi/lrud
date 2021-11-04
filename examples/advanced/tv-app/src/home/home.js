@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import './home.css';
 import chunk from 'lodash/chunk';
-import { FocusNode, useSetFocus } from '@please/lrud';
+import { FocusNode, useSetFocus } from '@mubi/lrud';
 import { motion } from 'framer-motion';
 import Row from './row';
 

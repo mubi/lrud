@@ -1,6 +1,6 @@
 import './profiles.css';
 import { motion } from 'framer-motion';
-import { FocusNode } from '@please/lrud';
+import { FocusNode } from '@mubi/lrud';
 import Profile from './profile';
 
 const profiles = [

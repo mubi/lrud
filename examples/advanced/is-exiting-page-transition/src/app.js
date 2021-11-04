@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import classnames from 'classnames';
 import { useMountTransition } from 'core-hooks';
-import { FocusNode } from '@please/lrud';
+import { FocusNode } from '@mubi/lrud';
 import './app.css';
 
 export default function App() {

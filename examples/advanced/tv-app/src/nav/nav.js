@@ -1,4 +1,4 @@
-import { FocusNode, useSetFocus, useFocusNode } from '@please/lrud';
+import { FocusNode, useSetFocus, useFocusNode } from '@mubi/lrud';
 import classnames from 'classnames';
 import './nav.css';
 

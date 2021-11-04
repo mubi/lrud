@@ -1,4 +1,4 @@
-import { FocusNode } from '@please/lrud';
+import { FocusNode } from '@mubi/lrud';
 import './profile.css';
 
 export default function Profile({ profile, setSelectedProfile }) {

@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { FocusNode } from '@please/lrud';
+import { FocusNode } from '@mubi/lrud';
 import { AnimatePresence } from 'framer-motion';
 import './app.css';
 import Profiles from './profiles/profiles';
