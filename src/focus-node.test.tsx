@@ -1,3 +1,4 @@
+// @ts-nocheck
 import React, { useRef } from 'react';
 import '@testing-library/jest-dom';
 import { render, act, fireEvent, screen } from '@testing-library/react';
@@ -22,6 +23,9 @@ describe('FocusNode', () => {
     expect(() => {
       render(<TestComponent />);
     }).toThrow();
+
+    // TODO: check what these calls are
+    expect(console.error).toHaveBeenCalledTimes(2);
 
     expect(warning).toHaveBeenCalledTimes(2);
     expect(warning.mock.calls[0][1]).toEqual('NO_FOCUS_PROVIDER_DETECTED');
@@ -54,6 +58,9 @@ describe('FocusNode', () => {
 
       const nodeA = screen.getByTestId('nodeA');
       expect(nodeA instanceof HTMLDivElement).toBe(true);
+
+      expect(console.error).toHaveBeenCalledTimes(0);
+      expect(warning).toHaveBeenCalledTimes(0);
     });
 
     it('can be customized', () => {
@@ -80,6 +87,9 @@ describe('FocusNode', () => {
 
       const nodeA = screen.getByTestId('nodeA');
       expect(nodeA instanceof HTMLSpanElement).toBe(true);
+
+      expect(console.error).toHaveBeenCalledTimes(0);
+      expect(warning).toHaveBeenCalledTimes(0);
     });
   });
 
@@ -113,6 +123,9 @@ describe('FocusNode', () => {
 
       const nodeA = screen.getByTestId('nodeA');
       expect(nodeA).toHaveClass('focusedPls', 'focusedLeafPls');
+
+      expect(console.error).toHaveBeenCalledTimes(0);
+      expect(warning).toHaveBeenCalledTimes(0);
     });
 
     it('disabled', () => {
@@ -144,6 +157,9 @@ describe('FocusNode', () => {
 
       const nodeA = screen.getByTestId('nodeA');
       expect(nodeA).toHaveClass('disabledPls');
+
+      expect(console.error).toHaveBeenCalledTimes(0);
+      expect(warning).toHaveBeenCalledTimes(0);
     });
   });
 
@@ -169,6 +185,9 @@ describe('FocusNode', () => {
       );
 
       expect(focusStore.getState().focusedNodeId).toBe('nodeA');
+
+      expect(console.error).toHaveBeenCalledTimes(0);
+      expect(warning).toHaveBeenCalledTimes(0);
     });
 
     it('generates its own ID when one is not provided', () => {
@@ -194,6 +213,9 @@ describe('FocusNode', () => {
       expect(typeof focusStore.getState().focusedNodeId === 'string').toBe(
         true
       );
+
+      expect(console.error).toHaveBeenCalledTimes(0);
+      expect(warning).toHaveBeenCalledTimes(0);
     });
 
     it('warns if an invalid ID is passed, but still generates a valid one', () => {
@@ -222,6 +244,8 @@ describe('FocusNode', () => {
 
       expect(warning).toHaveBeenCalledTimes(1);
       expect(warning.mock.calls[0][1]).toEqual('INVALID_FOCUS_ID_PASSED');
+
+      expect(console.error).toHaveBeenCalledTimes(0);
     });
 
     it('warns if the ID "root" is passed in, but still generates a valid one', () => {
@@ -252,6 +276,7 @@ describe('FocusNode', () => {
 
       expect(warning).toHaveBeenCalledTimes(1);
       expect(warning.mock.calls[0][1]).toEqual('ROOT_ID_WAS_PASSED');
+      expect(console.error).toHaveBeenCalledTimes(0);
     });
   });
 
@@ -290,9 +315,14 @@ describe('FocusNode', () => {
       let nodeA = screen.getByTestId('nodeA');
       expect(nodeA).toHaveClass('sandwiches');
 
+      expect(console.error).toHaveBeenCalledTimes(0);
+      expect(warning).toHaveBeenCalledTimes(0);
+
       act(() => setFocus('nodeB'));
 
       expect(nodeA).toHaveClass('spaghetti');
+      expect(console.error).toHaveBeenCalledTimes(0);
+      expect(warning).toHaveBeenCalledTimes(0);
     });
   });
 
@@ -322,6 +352,9 @@ describe('FocusNode', () => {
       expect(focusStore.getState().focusedNodeId).toBe('nodeA');
       let nodeA = screen.getByTestId('nodeA');
       expect(elRef.current).toBe(nodeA);
+
+      expect(console.error).toHaveBeenCalledTimes(0);
+      expect(warning).toHaveBeenCalledTimes(0);
     });
   });
 });

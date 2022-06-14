@@ -1,3 +1,4 @@
+// @ts-nocheck
 import React, { useState } from 'react';
 import '@testing-library/jest-dom';
 import {
@@ -72,6 +73,7 @@ describe('useFocusEvents', () => {
       expect(nodeAOnBlurred.mock.calls.length).toBe(1);
       expect(nodeBOnFocused.mock.calls.length).toBe(1);
       expect(nodeBOnBlurred.mock.calls.length).toBe(0);
+      expect(console.error).toHaveBeenCalledTimes(0);
     });
   });
 
@@ -148,6 +150,7 @@ describe('useFocusEvents', () => {
       expect(nodeAOnEnabled.mock.calls.length).toBe(1);
       expect(nodeBOnDisabled.mock.calls.length).toBe(0);
       expect(nodeBOnEnabled.mock.calls.length).toBe(0);
+      expect(console.error).toHaveBeenCalledTimes(0);
     });
 
     it('works when disabled on mount', () => {
@@ -222,6 +225,7 @@ describe('useFocusEvents', () => {
       expect(nodeAOnEnabled.mock.calls.length).toBe(1);
       expect(nodeBOnDisabled.mock.calls.length).toBe(0);
       expect(nodeBOnEnabled.mock.calls.length).toBe(0);
+      expect(console.error).toHaveBeenCalledTimes(0);
     });
   });
 
@@ -318,6 +322,7 @@ describe('useFocusEvents', () => {
         expect(nodeBOnActive.mock.calls.length).toBe(1);
         expect(nodeBOnInactive.mock.calls.length).toBe(1);
 
+        expect(console.error).toHaveBeenCalledTimes(0);
         done();
       });
     });

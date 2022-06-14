@@ -1,3 +1,4 @@
+// @ts-nocheck
 import React from 'react';
 import '@testing-library/jest-dom';
 import { render, fireEvent, screen } from '@testing-library/react';
@@ -44,12 +45,8 @@ describe('<FocusRoot/>', () => {
       expect(focusState.activeNodeId).toEqual(null);
       expect(Object.values(focusState.nodes)).toHaveLength(3);
 
-      fireEvent.keyDown(window, {
-        code: 'ArrowRight',
-        key: 'ArrowRight',
-      });
-
-      expect(focusStore.getState().focusedNodeId).toEqual('nodeB');
+      expect(console.error).toHaveBeenCalledTimes(0);
+      expect(warning).toHaveBeenCalledTimes(0);
 
       fireEvent.keyDown(window, {
         code: 'ArrowRight',
@@ -57,6 +54,19 @@ describe('<FocusRoot/>', () => {
       });
 
       expect(focusStore.getState().focusedNodeId).toEqual('nodeB');
+
+      expect(console.error).toHaveBeenCalledTimes(0);
+      expect(warning).toHaveBeenCalledTimes(0);
+
+      fireEvent.keyDown(window, {
+        code: 'ArrowRight',
+        key: 'ArrowRight',
+      });
+
+      expect(focusStore.getState().focusedNodeId).toEqual('nodeB');
+
+      expect(console.error).toHaveBeenCalledTimes(0);
+      expect(warning).toHaveBeenCalledTimes(0);
     });
 
     it('supports wrapping', () => {
@@ -97,6 +107,9 @@ describe('<FocusRoot/>', () => {
       expect(focusState.activeNodeId).toEqual(null);
       expect(Object.values(focusState.nodes)).toHaveLength(3);
 
+      expect(console.error).toHaveBeenCalledTimes(0);
+      expect(warning).toHaveBeenCalledTimes(0);
+
       fireEvent.keyDown(window, {
         code: 'ArrowRight',
         key: 'ArrowRight',
@@ -104,12 +117,18 @@ describe('<FocusRoot/>', () => {
 
       expect(focusStore.getState().focusedNodeId).toEqual('nodeB');
 
+      expect(console.error).toHaveBeenCalledTimes(0);
+      expect(warning).toHaveBeenCalledTimes(0);
+
       fireEvent.keyDown(window, {
         code: 'ArrowRight',
         key: 'ArrowRight',
       });
 
       expect(focusStore.getState().focusedNodeId).toEqual('nodeA');
+
+      expect(console.error).toHaveBeenCalledTimes(0);
+      expect(warning).toHaveBeenCalledTimes(0);
     });
   });
 
@@ -152,12 +171,8 @@ describe('<FocusRoot/>', () => {
       expect(focusState.activeNodeId).toEqual(null);
       expect(Object.values(focusState.nodes)).toHaveLength(3);
 
-      fireEvent.keyDown(window, {
-        code: 'ArrowDown',
-        key: 'ArrowDown',
-      });
-
-      expect(focusStore.getState().focusedNodeId).toEqual('nodeB');
+      expect(console.error).toHaveBeenCalledTimes(0);
+      expect(warning).toHaveBeenCalledTimes(0);
 
       fireEvent.keyDown(window, {
         code: 'ArrowDown',
@@ -165,6 +180,19 @@ describe('<FocusRoot/>', () => {
       });
 
       expect(focusStore.getState().focusedNodeId).toEqual('nodeB');
+
+      expect(console.error).toHaveBeenCalledTimes(0);
+      expect(warning).toHaveBeenCalledTimes(0);
+
+      fireEvent.keyDown(window, {
+        code: 'ArrowDown',
+        key: 'ArrowDown',
+      });
+
+      expect(focusStore.getState().focusedNodeId).toEqual('nodeB');
+
+      expect(console.error).toHaveBeenCalledTimes(0);
+      expect(warning).toHaveBeenCalledTimes(0);
     });
 
     it('warns on invalid orientation values', () => {
@@ -184,6 +212,8 @@ describe('<FocusRoot/>', () => {
 
       expect(warning).toHaveBeenCalledTimes(1);
       expect(warning.mock.calls[0][1]).toEqual('INVALID_ROOT_ORIENTATION');
+
+      expect(console.error).toHaveBeenCalledTimes(0);
     });
   });
 
@@ -226,6 +256,9 @@ describe('<FocusRoot/>', () => {
       expect(focusState.activeNodeId).toEqual(null);
       expect(Object.values(focusState.nodes)).toHaveLength(3);
 
+      expect(console.error).toHaveBeenCalledTimes(0);
+      expect(warning).toHaveBeenCalledTimes(0);
+
       fireEvent.keyDown(window, {
         code: 'ArrowDown',
         key: 'ArrowDown',
@@ -233,12 +266,18 @@ describe('<FocusRoot/>', () => {
 
       expect(focusStore.getState().focusedNodeId).toEqual('nodeB');
 
+      expect(console.error).toHaveBeenCalledTimes(0);
+      expect(warning).toHaveBeenCalledTimes(0);
+
       fireEvent.keyDown(window, {
         code: 'ArrowDown',
         key: 'ArrowDown',
       });
 
       expect(focusStore.getState().focusedNodeId).toEqual('nodeA');
+
+      expect(console.error).toHaveBeenCalledTimes(0);
+      expect(warning).toHaveBeenCalledTimes(0);
     });
   });
 });

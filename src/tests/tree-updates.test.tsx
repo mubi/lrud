@@ -1,7 +1,9 @@
+// @ts-nocheck
 import React, { useState } from 'react';
 import '@testing-library/jest-dom';
 import { render, act, screen } from '@testing-library/react';
 import { FocusRoot, FocusNode, useFocusStoreDangerously } from '../index';
+import { warning } from '../utils/warning';
 
 //
 // React Apps frequently mount and unmount components as a user interacts
@@ -45,6 +47,9 @@ describe('Tree updates', () => {
     expect(focusState.focusHierarchy).toEqual(['root', 'nodeA', 'nodeA-A']);
     expect(focusState.activeNodeId).toEqual(null);
     expect(Object.values(focusState.nodes)).toHaveLength(3);
+
+    expect(warning).toHaveBeenCalledTimes(0);
+    expect(console.error).toHaveBeenCalledTimes(0);
   });
 
   it('disabled (leaf node child)', () => {
@@ -82,6 +87,10 @@ describe('Tree updates', () => {
     expect(focusState.focusHierarchy).toEqual(['root', 'nodeA']);
     expect(focusState.activeNodeId).toEqual(null);
     expect(Object.values(focusState.nodes)).toHaveLength(3);
+
+    expect(warning).toHaveBeenCalledTimes(0);
+    // TODO: see gh-92
+    // expect(console.error).toHaveBeenCalledTimes(0);
   });
 
   // TODO: update this behavior! See gh-55
@@ -124,6 +133,10 @@ describe('Tree updates', () => {
     expect(focusState.focusHierarchy).toEqual(['root', 'nodeA']);
     expect(focusState.activeNodeId).toEqual(null);
     expect(Object.values(focusState.nodes)).toHaveLength(4);
+
+    expect(warning).toHaveBeenCalledTimes(0);
+    // TODO: see gh-92
+    // expect(console.error).toHaveBeenCalledTimes(0);
   });
 
   it('focus trap child', () => {
@@ -161,6 +174,10 @@ describe('Tree updates', () => {
     expect(focusState.focusHierarchy).toEqual(['root', 'nodeA']);
     expect(focusState.activeNodeId).toEqual(null);
     expect(Object.values(focusState.nodes)).toHaveLength(3);
+
+    expect(warning).toHaveBeenCalledTimes(0);
+    // TODO: see gh-92
+    // expect(console.error).toHaveBeenCalledTimes(0);
   });
 
   it('moves focus to a new child node that is mounted (two levels)', () => {
@@ -207,6 +224,9 @@ describe('Tree updates', () => {
     ]);
     expect(focusState.activeNodeId).toEqual(null);
     expect(Object.values(focusState.nodes)).toHaveLength(4);
+
+    expect(warning).toHaveBeenCalledTimes(0);
+    expect(console.error).toHaveBeenCalledTimes(0);
   });
 
   it('respects `onMountAssignFocusTo`', () => {
@@ -254,6 +274,9 @@ describe('Tree updates', () => {
     ]);
     expect(focusState.activeNodeId).toEqual(null);
     expect(Object.values(focusState.nodes)).toHaveLength(5);
+
+    expect(warning).toHaveBeenCalledTimes(0);
+    expect(console.error).toHaveBeenCalledTimes(0);
   });
 
   it('works with grids', () => {
@@ -313,5 +336,8 @@ describe('Tree updates', () => {
     ]);
     expect(focusState.activeNodeId).toEqual(null);
     expect(Object.values(focusState.nodes)).toHaveLength(9);
+
+    expect(warning).toHaveBeenCalledTimes(0);
+    expect(console.error).toHaveBeenCalledTimes(0);
   });
 });

@@ -11,6 +11,7 @@ import React, {
 import FocusContext from './focus-context';
 import nodeFromDefinition from './utils/node-from-definition';
 import { warning } from './utils/warning';
+import usePrevious from './hooks/internal/use-previous';
 import {
   FocusStore,
   Id,
@@ -181,7 +182,9 @@ export function FocusNode(
     const nonStringFocusId =
       typeof focusId !== 'string' && focusId !== undefined;
     const reservedFocusId = focusId === 'root';
-    const invalidNodeId = nonStringFocusId || reservedFocusId;
+    const emptyStringNode = focusId + '' === '';
+    const invalidNodeId =
+      nonStringFocusId || reservedFocusId || emptyStringNode;
 
     if (process.env.NODE_ENV !== 'production') {
       if (reservedFocusId) {
@@ -192,9 +195,9 @@ export function FocusNode(
         );
       }
 
-      if (nonStringFocusId) {
+      if (nonStringFocusId || emptyStringNode) {
         warning(
-          'A focus node with an invalid focus ID was created: "root". This is a reserved ID, so it has been ' +
+          'A focus node with an invalid (non-string or empty string) focus ID was created. This is a not supported ID type (expected non-empty string), so it has been ' +
             'ignored. Please choose another ID if you wish to specify an ID.',
           'INVALID_FOCUS_ID_PASSED'
         );
@@ -373,6 +376,7 @@ export function FocusNode(
     if (typeof propsFromNode === 'function') {
       return propsFromNode(node);
     }
+    return {};
   }, [node, propsFromNode]);
 
   const nodeRef = useRef(node);
@@ -380,13 +384,8 @@ export function FocusNode(
 
   let nodeExistsInTree = useRef(false);
 
-  useEffect(() => {
-    // This ensures that we don't check for updates on the first render.
-    if (!nodeExistsInTree.current) {
-      return;
-    }
-
-    store.updateNode(nodeId, {
+  const dynamicProps = useMemo(() => {
+    return {
       disabled: Boolean(disabled),
       isExiting: Boolean(isExiting),
       defaultFocusColumn,
@@ -395,8 +394,7 @@ export function FocusNode(
       trap: isTrap,
       forgetTrapFocusHierarchy,
       defaultFocusChild,
-    });
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+    };
   }, [
     disabled,
     isExiting,
@@ -407,6 +405,36 @@ export function FocusNode(
     forgetTrapFocusHierarchy,
     defaultFocusChild,
   ]);
+
+  const prevDynamicProps = usePrevious(dynamicProps);
+
+  useEffect(() => {
+    // This ensures that we don't check for updates on the first render.
+    if (!nodeExistsInTree.current) {
+      return;
+    }
+
+    const actualUpdate = {};
+    let hasUpdate = false;
+
+    for (let x in dynamicProps) {
+      // @ts-ignore
+      const currentProp = dynamicProps[x];
+      // @ts-ignore
+      const prevProp = prevDynamicProps[x];
+
+      if (currentProp !== prevProp) {
+        hasUpdate = true;
+        // @ts-ignore
+        actualUpdate[x] = currentProp;
+      }
+    }
+
+    if (hasUpdate) {
+      store.updateNode(nodeId, actualUpdate);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [dynamicProps, prevDynamicProps]);
 
   useEffect(() => {
     store.createNodes(
@@ -503,13 +531,16 @@ export function FocusNode(
             nodeRef.current &&
             typeof nodeRef.current.onSelected === 'function'
           ) {
-            nodeRef.current.onSelected({
-              node: nodeRef.current,
-              isArrow: false,
-              key: 'select',
-              preventDefault: () => {},
-              stopPropagation: () => {},
-            });
+            // Note: `bubbleKey` fires the events up whatever the current focus hierarchy is, so it might seem
+            // weird that we can just assume that this node is always the leaf node of the current hierarchy.
+            //
+            // It turns out that this works because:
+            //   - when pointer events are enabled we always set focus to leaf nodes in `onMouseOver`
+            //   - this lib is not intended for touchscreen environments, so all click events will be preceded by a hover
+            //   - these pointer events are only handled on leaf nodes
+            //
+            // If any of those conditions ever change then we will need to revisit this, but for now it should be fine.
+            staticDefinitions.providerValue.store.processKey.select();
           }
 
           staticDefinitions.providerValue.store.handleSelect(nodeId);

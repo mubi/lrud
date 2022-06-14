@@ -4,6 +4,7 @@ import updateFocus from './update-focus/update-focus';
 import handleArrowUtil from './handle-arrow/handle-arrow';
 import enforceStateStructure from './utils/enforce-state-structure';
 import recursivelyUpdateChildren from './utils/recursively-update-node';
+import bubbleKey from './utils/bubble-key-input';
 import { warning } from './utils/warning';
 import {
   FocusState,
@@ -17,6 +18,7 @@ import {
   Listener,
   NodeDefinition,
   InteractionMode,
+  LRUDKey,
 } from './types';
 
 interface CreateFocusStoreOptions {
@@ -301,24 +303,36 @@ export default function createFocusStore({
       return;
     }
 
-    update.disabled = Boolean(update.disabled);
-    update.isExiting = Boolean(update.isExiting);
+    const updateHasDisabled = update.disabled !== undefined;
+    const updateHasExiting = update.isExiting !== undefined;
+
+    if (updateHasDisabled) {
+      update.disabled = Boolean(update.disabled);
+    }
+
+    if (updateHasExiting) {
+      update.isExiting = Boolean(update.isExiting);
+    }
 
     const nodeChanged = dynamicNodeProps.some((prop) => {
       // @ts-ignore
-      return currentNode[prop] !== update[prop];
+      const updateValue = update[prop];
+      const updateValueExists = updateValue !== undefined;
+
+      // @ts-ignore
+      return updateValueExists && currentNode[prop] !== update[prop];
     });
 
     if (update && nodeChanged) {
       const newNode: Node = {
         ...currentNode,
-        disabled: update.disabled,
-        isExiting: update.isExiting,
+        disabled: update.disabled ?? currentNode.disabled,
+        isExiting: update.isExiting ?? currentNode.isExiting,
         defaultFocusColumn:
           update.defaultFocusColumn ?? currentNode.defaultFocusColumn,
         defaultFocusRow: update.defaultFocusRow ?? currentNode.defaultFocusRow,
         wrapping: update.wrapping ?? currentNode.wrapping,
-        trap: update.wrapping ?? currentNode.trap,
+        trap: update.trap ?? currentNode.trap,
         forgetTrapFocusHierarchy:
           update.forgetTrapFocusHierarchy ??
           currentNode.forgetTrapFocusHierarchy,
@@ -326,16 +340,25 @@ export default function createFocusStore({
           update.defaultFocusChild ?? currentNode.defaultFocusChild,
       };
 
-      const updatedChildren = recursivelyUpdateChildren(
-        currentState.nodes,
-        newNode.children,
-        // Note: we don't pass the full update as the other attributes (trap, wrapping, etc)
-        // only affect the parent, whereas these specific values affect the children.
-        {
-          disabled: update.disabled,
-          isExiting: update.isExiting,
+      let updatedChildren = {};
+
+      if (updateHasExiting || updateHasDisabled) {
+        let recursiveUpdate: NodeUpdate = {};
+        if (updateHasDisabled) {
+          recursiveUpdate.disabled = update.disabled;
         }
-      );
+        if (updateHasExiting) {
+          recursiveUpdate.isExiting = update.isExiting;
+        }
+
+        updatedChildren = recursivelyUpdateChildren(
+          currentState.nodes,
+          newNode.children,
+          // Note: we don't pass the full update as the other attributes (trap, wrapping, etc)
+          // only affect the parent, whereas these specific values affect the children.
+          recursiveUpdate
+        );
+      }
 
       const nodeWasFocused = currentState.focusHierarchy.find(
         (v) => v === nodeId
@@ -350,7 +373,8 @@ export default function createFocusStore({
         },
       };
 
-      if (nodeWasFocused && (update.disabled || update.isExiting)) {
+      // Only do this if the update actually updated these
+      if (nodeWasFocused && (updateHasDisabled || updateHasExiting)) {
         const parentId = newNode.parentId as Id;
 
         updatedState = updateFocus({
@@ -487,7 +511,11 @@ export default function createFocusStore({
     addPointerListeners();
   }
 
-  return {
+  function internalProcessKey(key: LRUDKey) {
+    bubbleKey(_focusStore, key);
+  }
+
+  const _focusStore: FocusStore = {
     subscribe,
     getState,
     createNodes,
@@ -498,5 +526,15 @@ export default function createFocusStore({
     handleSelect,
     configurePointerEvents,
     destroy,
+    processKey: {
+      select: () => internalProcessKey('select'),
+      back: () => internalProcessKey('back'),
+      down: () => internalProcessKey('down'),
+      left: () => internalProcessKey('left'),
+      right: () => internalProcessKey('right'),
+      up: () => internalProcessKey('up'),
+    },
   };
+
+  return _focusStore;
 }
