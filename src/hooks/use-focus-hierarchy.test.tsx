@@ -1,3 +1,4 @@
+// @ts-nocheck
 import React from 'react';
 import '@testing-library/jest-dom';
 import { render, act } from '@testing-library/react';
@@ -55,5 +56,6 @@ describe('useFocusHierarchy', () => {
     expect(focusHierarchy.map((node) => node.focusId)).toEqual(
       focusStore.getState().focusHierarchy
     );
+    expect(console.error).toHaveBeenCalledTimes(0);
   });
 });

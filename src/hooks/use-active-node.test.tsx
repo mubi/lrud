@@ -1,3 +1,4 @@
+// @ts-nocheck
 import React, { useState } from 'react';
 import '@testing-library/jest-dom';
 import {
@@ -93,6 +94,7 @@ describe('useActiveNode', () => {
 
       focusState = focusStore.getState();
       expect(activeNode).toBe(focusState.nodes.nodeA);
+      expect(console.error).toHaveBeenCalledTimes(0);
 
       done();
     });

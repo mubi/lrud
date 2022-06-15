@@ -1,3 +1,4 @@
+// @ts-nocheck
 import React from 'react';
 import '@testing-library/jest-dom';
 import { render, act, fireEvent, screen } from '@testing-library/react';
@@ -72,6 +73,7 @@ describe('useSetFocus', () => {
     nodeB = screen.getByTestId('nodeB');
     expect(nodeB).not.toHaveClass('isFocused');
     expect(nodeB).not.toHaveClass('isFocusedLeaf');
+    expect(console.error).toHaveBeenCalledTimes(0);
   });
 
   it('can be used to assign focus', () => {
@@ -125,6 +127,7 @@ describe('useSetFocus', () => {
     expect(focusState.focusHierarchy).toEqual(['root', 'nodeB']);
     expect(focusState.activeNodeId).toEqual(null);
     expect(Object.values(focusState.nodes)).toHaveLength(3);
+    expect(console.error).toHaveBeenCalledTimes(0);
   });
 
   it('can be used to assign focus deeply by focusing a parent', () => {
@@ -191,6 +194,7 @@ describe('useSetFocus', () => {
     expect(focusState.focusedNodeId).toEqual('nodeB-A');
     expect(focusState.focusHierarchy).toEqual(['root', 'nodeB', 'nodeB-A']);
     expect(focusState.activeNodeId).toEqual(null);
+    expect(console.error).toHaveBeenCalledTimes(0);
   });
 
   it('ignores disabled nodes', () => {
@@ -244,6 +248,7 @@ describe('useSetFocus', () => {
     expect(focusState.focusHierarchy).toEqual(['root', 'nodeA']);
     expect(focusState.activeNodeId).toEqual(null);
     expect(Object.values(focusState.nodes)).toHaveLength(3);
+    expect(console.error).toHaveBeenCalledTimes(0);
   });
 
   it('it is a noop if the node does not exist', () => {
@@ -300,6 +305,7 @@ describe('useSetFocus', () => {
 
     expect(warning).toHaveBeenCalledTimes(1);
     expect(warning.mock.calls[0][1]).toEqual('NODE_DOES_NOT_EXIST');
+    expect(console.error).toHaveBeenCalledTimes(0);
   });
 
   it('it is a noop with a nonsense argument', () => {
@@ -356,5 +362,6 @@ describe('useSetFocus', () => {
 
     expect(warning).toHaveBeenCalledTimes(1);
     expect(warning.mock.calls[0][1]).toEqual('NODE_ID_NOT_STRING_TO_SET_FOCUS');
+    expect(console.error).toHaveBeenCalledTimes(0);
   });
 });

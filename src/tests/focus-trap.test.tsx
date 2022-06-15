@@ -1,6 +1,7 @@
+// @ts-nocheck
 import React from 'react';
 import '@testing-library/jest-dom';
-import { render, fireEvent, screen } from '@testing-library/react';
+import { render, fireEvent, act, screen } from '@testing-library/react';
 import {
   FocusRoot,
   FocusNode,
@@ -29,6 +30,8 @@ describe('Focus Traps', () => {
 
     expect(warning).toHaveBeenCalledTimes(1);
     expect(warning.mock.calls[0][1]).toEqual('RESTORE_TRAP_FOCUS_WITHOUT_TRAP');
+
+    expect(console.error).toHaveBeenCalledTimes(0);
   });
 
   it('does not focus on mount', () => {
@@ -56,6 +59,9 @@ describe('Focus Traps', () => {
     );
 
     expect(focusStore.getState().focusedNodeId).toEqual('root');
+
+    expect(warning).toHaveBeenCalledTimes(0);
+    expect(console.error).toHaveBeenCalledTimes(0);
   });
 
   it('cannot be arrowed into', () => {
@@ -121,6 +127,9 @@ describe('Focus Traps', () => {
     });
 
     expect(focusStore.getState().focusedNodeId).toEqual('nodeA-B');
+
+    expect(warning).toHaveBeenCalledTimes(0);
+    expect(console.error).toHaveBeenCalledTimes(0);
   });
 
   it('can be focused and unfocused via useSetFocus', () => {
@@ -156,7 +165,7 @@ describe('Focus Traps', () => {
     );
 
     expect(focusStore.getState().focusedNodeId).toEqual('nodeA-A-A');
-    setFocus('nodeB');
+    act(() => setFocus('nodeB'));
     expect(focusStore.getState().focusedNodeId).toEqual('nodeB-A');
 
     fireEvent.keyDown(window, {
@@ -199,11 +208,14 @@ describe('Focus Traps', () => {
 
     expect(focusStore.getState().focusedNodeId).toEqual('nodeB-B');
 
-    setFocus('nodeA');
+    act(() => setFocus('nodeA'));
     expect(focusStore.getState().focusedNodeId).toEqual('nodeA-A-A');
 
-    setFocus('nodeB');
+    act(() => setFocus('nodeB'));
     expect(focusStore.getState().focusedNodeId).toEqual('nodeB-B');
+
+    expect(warning).toHaveBeenCalledTimes(0);
+    expect(console.error).toHaveBeenCalledTimes(0);
   });
 
   it('supports forgetTrapFocusHierarchy', () => {
@@ -243,7 +255,7 @@ describe('Focus Traps', () => {
     );
 
     expect(focusStore.getState().focusedNodeId).toEqual('nodeA-A-A');
-    setFocus('nodeB');
+    act(() => setFocus('nodeB'));
     expect(focusStore.getState().focusedNodeId).toEqual('nodeB-A');
 
     fireEvent.keyDown(window, {
@@ -286,11 +298,14 @@ describe('Focus Traps', () => {
 
     expect(focusStore.getState().focusedNodeId).toEqual('nodeB-B');
 
-    setFocus('nodeA');
+    act(() => setFocus('nodeA'));
     expect(focusStore.getState().focusedNodeId).toEqual('nodeA-A-A');
 
-    setFocus('nodeB');
+    act(() => setFocus('nodeB'));
     expect(focusStore.getState().focusedNodeId).toEqual('nodeB-A');
+
+    expect(warning).toHaveBeenCalledTimes(0);
+    expect(console.error).toHaveBeenCalledTimes(0);
   });
 
   it('cannot be arrowed into when its deeply nested', () => {
@@ -339,6 +354,9 @@ describe('Focus Traps', () => {
     });
 
     expect(focusStore.getState().focusedNodeId).toEqual('nodeA-B');
+
+    expect(warning).toHaveBeenCalledTimes(0);
+    expect(console.error).toHaveBeenCalledTimes(0);
   });
 
   it('behaves well with grids', () => {
@@ -378,7 +396,7 @@ describe('Focus Traps', () => {
     );
 
     expect(focusStore.getState().focusedNodeId).toEqual('nodeA-A-A');
-    setFocus('gridRoot');
+    act(() => setFocus('gridRoot'));
     expect(focusStore.getState().focusedNodeId).toEqual('gridItem1-1');
     expect(focusStore.getState().focusHierarchy).toEqual([
       'root',
@@ -418,10 +436,10 @@ describe('Focus Traps', () => {
 
     // We move focus out of the trap, and then back in, to ensure that the position
     // is retained
-    setFocus('nodeA');
+    act(() => setFocus('nodeA'));
     expect(focusStore.getState().focusedNodeId).toEqual('nodeA-A-A');
 
-    setFocus('gridRoot');
+    act(() => setFocus('gridRoot'));
     expect(focusStore.getState().focusedNodeId).toEqual('gridItem1-2');
     expect(focusStore.getState().focusHierarchy).toEqual([
       'root',
@@ -430,5 +448,8 @@ describe('Focus Traps', () => {
       'gridRow1',
       'gridItem1-2',
     ]);
+
+    expect(warning).toHaveBeenCalledTimes(0);
+    expect(console.error).toHaveBeenCalledTimes(0);
   });
 });

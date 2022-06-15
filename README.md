@@ -29,7 +29,7 @@ yarn add @mubi/lrud
 
 This library has the following peer dependencies:
 
-- [`react@^16.8.0`](https://www.npmjs.com/package/react)
+- [`react@^16.8.0 || react@^17.0.0`](https://www.npmjs.com/package/react)
 
 ## Table of Contents
 
@@ -40,11 +40,13 @@ This library has the following peer dependencies:
 - [**API Reference**](#api-reference)
   - [\<FocusRoot/\>](#focusroot-)
   - [\<FocusNode/\>](#FocusNode-)
-  - [useFocusNode()](#usefocusnode-focusid-)
+  - [useFocusNodeById()](#usefocusnodebyid-focusid-)
+  - [useLeafFocusedNode()](#useleaffocusednode)
   - [useActiveNode()](#useactivenode)
   - [useSetFocus()](#usesetfocus)
   - [useNodeEvents()](#usenodeevents-focusid-events-)
   - [useFocusHierarchy()](#usefocushierarchy)
+  - [useProcessKey()](#useprocesskey)
   - [useFocusStoreDangerously()](#usefocusstoredangerously)
 - [**Interfaces**](#interfaces)
   - [FocusNode](#focusnode)
@@ -114,10 +116,11 @@ Serves as the root node of a new focus hierarchy. There should only ever be one 
 
 All props are optional.
 
-| Prop          | Type    | Default value  | Description                                                                                             |
-| ------------- | ------- | -------------- | ------------------------------------------------------------------------------------------------------- |
-| `orientation` | string  | `'horizontal'` | Whether the children of the root node are arranged horizontally or vertically.                          |
-| `wrapping`    | boolean | `false`        | Set to `true` for the navigation to wrap when the user reaches the start or end of the root's children. |
+| Prop            | Type    | Default value  | Description                                                                                             |
+| --------------- | ------- | -------------- | ------------------------------------------------------------------------------------------------------- |
+| `orientation`   | string  | `'horizontal'` | Whether the children of the root node are arranged horizontally or vertically.                          |
+| `wrapping`      | boolean | `false`        | Set to `true` for the navigation to wrap when the user reaches the start or end of the root's children. |
+| `pointerEvents` | boolean | `false`        | Set to `true` to enable pointer events. [Read the guide.](./guides/pointer-events.md) |
 
 ```jsx
 import { FocusRoot } from '@mubi/lrud';
@@ -156,7 +159,7 @@ All props are optional. Example usage appears beneath the props table.
 | `isTrap`                    | boolean             | `false`          | Pass `true` to make this a focus trap.                                                                                                                                                 |
 | `forgetTrapFocusHierarchy`  | boolean             | `false`          | Pass `true` and, if this node is a trap, it will not restore their previous focus hierarchy when becoming focused again.                                                               |
 | `onMountAssignFocusTo`      | string              |                  | A focus ID of a nested child to default focus to when this node mounts.                                                                                                                |
-| `defaultFocusChild`         | number              |                  | The child index that should receive focus when focus is assigned to this focus node. Does not work with grids.                                                                         |
+| `defaultFocusChild`         | number\|function   |                  | The child index that should receive focus when focus is assigned to this focus node. Does not work with grids. We strongly recommend using [`useCallback`](https://reactjs.org/docs/hooks-reference.html#usecallback) when using the function form to avoid infinite render loops.     |
 | `defaultFocusColumn`        | number              | `0`              | The column index that should receive focus when focus is assigned to this focus node. Applies to grids only.                                                                           |
 | `defaultFocusRow`           | number              | `0`              | The row index that should receive focus when focus is assigned to this focus node. Applies to grids only.                                                                              |
 | `isExiting`                 | boolean             |                  | Pass `true` to signal that this node is animating out. Useful for certain kinds of exit transitions.                                                                                   |
@@ -192,24 +195,40 @@ export default function Profile() {
 }
 ```
 
-### `useFocusNode( focusId )`
+### `useFocusNodeById( focusId )`
 
 A [Hook](https://reactjs.org/docs/hooks-intro.html) that returns the focus node with ID `focusId`. If the node does not exist,
 then `null` will be returned instead.
 
 ```js
-import { useFocusNode } from '@mubi/lrud';
+import { useFocusNodeById } from '@mubi/lrud';
 
 export default function MyComponent() {
-  const navFocusNode = useFocusNode('nav');
+  const navFocusNode = useFocusNodeById('nav');
 
   console.log('Is the nav focused?', navFocusNode?.isFocused);
 }
 ```
 
+### `useLeafFocusedNode()`
+
+A [Hook](https://reactjs.org/docs/hooks-intro.html) that returns the currently-in-focus leaf node.
+
+```js
+import { useLeafFocusedNode } from '@please/lrud';
+
+export default function MyComponent() {
+  const currentFocusedNode = useLeafFocusedNode();
+
+  console.log('Currently focused node', currentFocusedNode);
+}
+```
+
 ### `useActiveNode()`
 
-A [Hook](https://reactjs.org/docs/hooks-intro.html) that returns the active focus node, or `null` if no node is active.
+A [Hook](https://reactjs.org/docs/hooks-intro.html) that returns the [active focus node](./guides/active.md), or `null` if
+no node is active. As a reminder, the active node is whatever node was selected last (similar to how interactive elements
+in the DOM become active after being clicked).
 
 ```js
 import { useActiveNode } from '@mubi/lrud';
@@ -298,6 +317,42 @@ export default function MyComponent() {
 }
 ```
 
+### `useProcessKey()`
+
+A [Hook](https://reactjs.org/docs/hooks-intro.html) that allows you to imperatively trigger LRUD key presses.
+
+```js
+import { useProcessKey } from '@please/lrud';
+
+function MyComponent() {
+  const processKey = useProcessKey();
+
+  useEffect(() => {
+    // Imperatively trigger a down key press
+    processKey.down();
+
+    // Imperatively trigger a back key press
+    processKey.select();
+
+    // ...same, for the back button.
+    processKey.back();
+  }, []);
+}
+```
+
+The full API is as follows.
+
+```ts
+interface ProcessKey {
+  select: () => void;
+  back: () => void;
+  down: () => void;
+  left: () => void;
+  right: () => void;
+  up: () => void;
+}
+```
+
 ### `useFocusStoreDangerously()`
 
 > ⚠️ Heads up! The FocusStore is an internal API. We strongly discourage you from accessing properties or calling
@@ -376,7 +431,8 @@ An object that is passed to you in the LRUD-related callbacks of a [`FocusNode` 
 | ----------------- | ----------------------- | ---------------------------------------------------------------------------------------------------------------------- |
 | `key`             | string                  | A string representing the key that was pressed. One of `"left"`, `"right"`, `"up"`, `"down"`, `"select"`, or `"back"`. |
 | `isArrow`         | boolean                 | Whether or not this key is an arrow.                                                                                   |
-| `node`            | [FocusNode](#focusnode) | The [`FocusNode`](#focusnode) that received this event.                                                                |
+| `node`            | [FocusNode](#focusnode) | The current [`FocusNode`](#focusnode) that received this event as the event propagates up the focus hierarchy. Analagous to [`event.currentTarget`](https://developer.mozilla.org/en-US/docs/Web/API/Event/currentTarget) |
+| `targetNode`      | [FocusNode](#focusnode) | The leaf [`FocusNode`](#focusnode) from which this event propagated. Analagous to [`event.target`](https://developer.mozilla.org/en-US/docs/Web/API/Event/target) |
 | `preventDefault`  | function                | Call this to stop the default behavior of the event. Commonly used to override the navigation behavior                 |
 | `stopPropagation` | function                | Call this to stop the propagation of the event.                                                                        |
 
@@ -434,10 +490,12 @@ for advanced use cases that you may have.
 | `deleteNode`             | function | Deletes a focus node from the tree.                                    |
 | `setFocus`               | function | Imperatively assign focus to a particular focus node.                  |
 | `updateNode`             | function | Update an existing node. Used to, for example, set a node as disabled. |
-| `handleArrow`            | function | Call this to navigate based on an arrow key press.                     |
-| `handleSelect`           | function | Call this to cause the focus tree to respond to a "select" key press.  |
+| `processKey `            | object   | Contains methods to trigger key presses.                               |
+| `handleArrow`            | function | Updates store state after arrow key presses.                           |
+| `handleSelect`           | function | Updates store state after select button presses.                       |
 | `configurePointerEvents` | function | Enable or disable pointer events. Receives one argument, a `boolean`.  | 
 | `destroy`                | function | Call when disposing of the store. Cleans up event listeners.           |
+
 
 ### `FocusState`
 

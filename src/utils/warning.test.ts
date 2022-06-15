@@ -1,3 +1,4 @@
+// @ts-nocheck
 import { warning } from './warning';
 
 describe('warning', () => {
@@ -20,5 +21,14 @@ describe('warning', () => {
 
     expect(console.error).toHaveBeenCalledTimes(1);
     expect(console.error.mock.calls[0][0]).toEqual('uh oh');
+  });
+
+  it('supports multiple calls by omitting a key', () => {
+    warning('uh oh1');
+    warning('uh oh2');
+
+    expect(console.error).toHaveBeenCalledTimes(2);
+    expect(console.error.mock.calls[0][0]).toEqual('uh oh1');
+    expect(console.error.mock.calls[1][0]).toEqual('uh oh2');
   });
 });

@@ -21,6 +21,7 @@ export type ReactNodeRef = Ref<HTMLElement>;
 export interface LRUDEvent {
   key: LRUDKey;
   isArrow: boolean;
+  targetNode: Node;
   node: Node;
   preventDefault: () => void;
   stopPropagation: () => void;
@@ -229,6 +230,14 @@ export interface FocusStore {
   handleSelect: (nodeId?: Id) => void;
   configurePointerEvents: (enablePointerEvents: boolean) => void;
   destroy: () => void;
+  processKey: {
+    select: () => void;
+    back: () => void;
+    down: () => void;
+    left: () => void;
+    right: () => void;
+    up: () => void;
+  };
 }
 
 export interface ProviderValue {

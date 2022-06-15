@@ -1,4 +1,4 @@
-import { FocusNode, useSetFocus, useFocusNode } from '@mubi/lrud';
+import { FocusNode, useSetFocus, useFocusNodeById } from '@mubi/lrud';
 import classnames from 'classnames';
 import './nav.css';
 
@@ -20,7 +20,7 @@ const navItems = [
 
 export default function Nav({ selectedProfile }) {
   const setFocus = useSetFocus();
-  const navNode = useFocusNode('nav');
+  const navNode = useFocusNodeById('nav');
 
   return (
     <>

@@ -1,5 +1,34 @@
 # Changelog
 
+
+### v0.0.17 (2022/6/14)
+
+Updates fork from @please/lrud 0.0.23
+
+**Bug Fixes**
+
+- Resolved an issue where a parent node's `disabled` or `isExiting` state would override a child's prop.
+- Resolved an issue where numeric `defaultFocusChild` used with disabled child nodes could lead to invalid
+  tree states.
+- Fixed an erroneous error that would be logged when mounting a tree with disabled nodes.
+- Fix bug related to updating a FocusNode's `isTrap` prop.
+
+**New Features**
+
+- `useFocusNode` has been renamed to `useFocusNodeById` for clarity, and to distinguish it from `useLeafFocusedNode`. The
+  old hook will continue to work, but using it will log a warning to the console when you are not running your app in
+  production.
+- New hook: `useProcessKey`. Allows you to imperatively trigger LRUD presses.
+- New hook: `useLeafFocusedNode`. This returns the current leaf focused node in the hierarchy.
+- Selection events from clicking focus nodes now bubble up the focus hierarchy, just like LRUD events do
+- `targetNode` is now a property of the `LRUDEvents` interface. This is the node that the event stemmed from; it's analagous to
+  [`event.target`](https://developer.mozilla.org/en-US/docs/Web/API/Event/target).
+
+**Other**
+
+- ESM, CJS, and transpiled builds are now distributed in the npm package.
+
+
 ### v0.0.16 (2021/11/4)
 
 **New Features**
