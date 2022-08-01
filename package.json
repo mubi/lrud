@@ -19,7 +19,7 @@
   },
   "publishConfig": {
     "access": "restricted",
-    "@mubi:registry": "https://npm.pkg.github.com"
+    "@mubi:registry": "https://npm.fury.io/mubi/"
   },
   "files": [
     "dist",
